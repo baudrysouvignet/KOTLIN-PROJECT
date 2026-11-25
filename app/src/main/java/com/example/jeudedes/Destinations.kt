@@ -1,5 +1,7 @@
 package com.example.jeudedes
 
+class HomeDestination
+
 class FilmListDestination
 
 data class FilmDetailDestination(val imdbId: String)

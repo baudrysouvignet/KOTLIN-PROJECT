@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,8 +42,12 @@ class MainActivity : ComponentActivity() {
             val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
             JeuDeDesTheme {
-                val backStack = remember { mutableStateListOf<Any>(FilmListDestination()) }
+                val backStack = remember { mutableStateListOf<Any>(HomeDestination()) }
 
+                val allerAccueil: () -> Unit = {
+                    backStack.clear()
+                    backStack.add(HomeDestination())
+                }
                 val allerRecherche: () -> Unit = {
                     backStack.clear()
                     backStack.add(FilmListDestination())
@@ -57,6 +62,17 @@ class MainActivity : ComponentActivity() {
                     // en paysage / grand écran : barre de navigation à gauche
                     if (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT) {
                         NavigationRail {
+                            NavigationRailItem(
+                                selected = backStack.lastOrNull() is HomeDestination,
+                                onClick = allerAccueil,
+                                icon = {
+                                    Icon(
+                                        Icons.Default.Home,
+                                        contentDescription = "Accueil"
+                                    )
+                                },
+                                label = { Text("Accueil") }
+                            )
                             NavigationRailItem(
                                 selected = backStack.lastOrNull() is FilmListDestination,
                                 onClick = allerRecherche,
@@ -89,6 +105,7 @@ class MainActivity : ComponentActivity() {
                                 title = {
                                     Text(
                                         when (backStack.lastOrNull()) {
+                                            is HomeDestination -> "Accueil"
                                             is FilmListDestination -> "Recherche de films"
                                             is FilmDetailDestination -> "Détails du film"
                                             is AddFilmDestination -> "Ajouter un film"
@@ -113,6 +130,17 @@ class MainActivity : ComponentActivity() {
                         bottomBar = {
                             if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
                                 NavigationBar {
+                                    NavigationBarItem(
+                                        selected = backStack.lastOrNull() is HomeDestination,
+                                        onClick = allerAccueil,
+                                        icon = {
+                                            Icon(
+                                                Icons.Default.Home,
+                                                contentDescription = "Accueil"
+                                            )
+                                        },
+                                        label = { Text("Accueil") }
+                                    )
                                     NavigationBarItem(
                                         selected = backStack.lastOrNull() is FilmListDestination,
                                         onClick = allerRecherche,
@@ -143,6 +171,16 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(innerPadding),
                             backStack = backStack,
                             entryProvider = entryProvider {
+                                entry<HomeDestination> {
+                                    HomeScreen(
+                                        viewModel = viewmodel,
+                                        windowClass = windowSizeClass,
+                                        onFilmClick = { imdbId ->
+                                            viewmodel.getFilmDetail(imdbId)
+                                            backStack.add(FilmDetailDestination(imdbId))
+                                        }
+                                    )
+                                }
                                 entry<FilmListDestination> {
                                     when (windowSizeClass.windowWidthSizeClass) {
                                         // écran assez grand : liste à gauche, détails à droite

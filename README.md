@@ -2,6 +2,7 @@ Mon application Android permet de rechercher des films de consulter leurs détai
 
 ## Fonctionnalités principales
 
+- **Page d'accueil** : Présentation d'un film mis en avant à la une (affiche grand format, titre, genre, résumé) et liste de films populaires directement accessible en dessous.
 - **Recherche de films** : Recherche de films via l'API OMDb avec affichage des résultats sous forme de liste (ou grille selon l'écran) avec affiche, titre et année.
 - **Fiche détaillée d'un film** : Affichage des informations complètes du film sélectionné (synopsis, genre, réalisateur, affiche).
 - **Affiche en plein écran** : Possibilité de cliquer sur l'affiche d'un film pour l'afficher en grand écran.
